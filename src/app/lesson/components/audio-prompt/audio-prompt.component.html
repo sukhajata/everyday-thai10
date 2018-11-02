@@ -1,0 +1,27 @@
+<ion-grid>
+  <ion-row  *ngIf="hasAudio">
+    <ion-col>
+      <audio autoplay controls src="{{audioUrl}}"></audio>
+    </ion-col>
+  </ion-row>
+  <ion-row *ngIf="hasAudio && labelEnglish">
+    <ion-col>{{labelEnglish}}</ion-col>
+  </ion-row>
+  <ion-row *ngIf="hasAudio && labelThai">
+    <ion-col>{{labelThai}}</ion-col>
+  </ion-row>
+
+  <ion-row  *ngIf="!hasAudio" align-items-center>
+    <ion-col size="auto">
+      <img width="30px" src="assets/img/speaker.png" (click)="speak(textToSpeak)"/>
+    </ion-col>
+    <ion-col>
+      <ng-container *ngIf="labelEnglish">
+        {{labelEnglish}}<br/>
+      </ng-container>
+      <ng-container *ngIf="labelThai">
+        {{labelThai}}
+      </ng-container>
+    </ion-col>
+  </ion-row>
+</ion-grid>

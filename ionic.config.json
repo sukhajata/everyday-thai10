@@ -1,0 +1,7 @@
+{
+  "name": "EverydaydayThai10",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}

@@ -1,0 +1,21 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      Home
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ng-container *ngFor="let lesson of lessons" >
+    <ion-card  (click)="launchLesson(lesson.Id)" >
+      <ion-card-header>
+        <ion-card-title>{{lesson.Name}}</ion-card-title>
+      </ion-card-header> 
+      <ion-card-content>{{lesson.Description}}</ion-card-content>
+    </ion-card> 
+  </ng-container>
+</ion-content>

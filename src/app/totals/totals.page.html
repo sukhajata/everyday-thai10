@@ -1,0 +1,27 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-button color="success" (click)="goHome()"><ion-icon name="home"></ion-icon></ion-button>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ng-container *ngIf="totals">
+    <ion-item *ngIf="totals.Words.length > 0">
+      <ion-label>จำนวนคำที่เรียนรู้</ion-label>
+      <ion-badge color="success">{{totals.Words.length}}</ion-badge>
+    </ion-item>
+    <ion-item *ngIf="+totals.TotalPercentage > 0">
+      <ion-label class="thai">เข้าใจกับเปอร์เซ็นต์อังกฤษ</ion-label>
+      <ion-badge color="success">{{totals.TotalPercentage}}</ion-badge>
+    </ion-item>
+    
+    <ng-container *ngFor="let word of totals.Words">
+      <ion-button (click)="speak(word.Content)">
+        {{word.Content}}<br />
+        {{word.Thai}}
+      </ion-button>
+    </ng-container>
+
+  </ng-container>
+
+</ion-content>

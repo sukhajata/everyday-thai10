@@ -1,0 +1,148 @@
+table {
+    width: 100%;
+}
+
+td.speaker {
+    width: 30px;
+}
+
+.frame {
+	padding: 4px;
+}
+
+.frame-wrong {
+	padding:4px;
+	background: var(--red-pink, #E91E63); /* red-pink */
+}
+
+.frame-highlight {
+	padding:4px;
+	background: var(--green, #4CAF50); /* Green */
+}
+
+img.normal {
+	max-width:97%;
+	margin:auto;
+	display:block;
+}
+
+img.fade {
+	opacity: 0.3;
+	max-width:97%;
+	margin:auto;
+	display:block;
+}
+
+button.choice-english {
+	width:100%;
+	background-color: #303F9F; /* Dark blue */
+	border: none;
+	color: white;
+	padding: 15px 32px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+	
+}
+
+button.choice-thai {
+	width:100%;
+	background-color: #303F9F; /* Dark blue */
+	border: none;
+	color: white;
+	padding: 15px 32px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 18px;
+}
+
+.navigation-button {
+	--background: var(--green, #4CAF50);
+}
+
+.navigation-cheat {
+	--background: var(--red, #dd1717);
+}
+
+ion-input {
+	--background: lightGrey;
+}
+
+.triangle-isosceles {
+	position:relative;
+	padding:10px;
+	font-size: 16px;
+	margin:3px;
+	color:#000;
+	-webkit-border-radius:10px;
+	-moz-border-radius:10px;
+	border-radius:10px;
+  }
+  
+  /* Variant : for left/right positioned triangle
+  ------------------------------------------ */
+  
+  .triangle-isosceles.left {
+	margin-left:50px;
+	background: var(--orange, #f3961c);
+  }
+  
+  /* Variant : for right positioned triangle
+  ------------------------------------------ */
+  
+  .triangle-isosceles.right {
+	margin-right:50px;
+	background: var(--blue, #1c79f3);
+  }
+  
+  
+  /* creates triangle */
+  .triangle-isosceles:after {
+	content:"";
+	position:absolute;
+	bottom:-15px; /* value = - border-top-width - border-bottom-width */
+	left:50px; /* controls horizontal position */
+	border-width:15px 15px 0; /* vary these values to change the angle of the vertex */
+	border-style:solid;
+	border-color: var(--orange, #f3961c) transparent;
+	/* reduce the damage in FF3.0 */
+	display:block;
+	width:0;
+  }
+  
+  /* Variant : top
+  ------------------------------------------ */
+  
+  .triangle-isosceles.top:after {
+	top:-15px; /* value = - border-top-width - border-bottom-width */
+	right:50px; /* controls horizontal position */
+	bottom:auto;
+	left:auto;
+	border-width:0 15px 15px; /* vary these values to change the angle of the vertex */
+	border-color: var(--orange, #f3961c) transparent;
+  }
+  
+  /* Variant : left
+  ------------------------------------------ */
+  
+  .triangle-isosceles.left:after {
+	top:16px; /* controls vertical position */
+	left:-50px; /* value = - border-left-width - border-right-width */
+	bottom:auto;
+	border-width:10px 50px 10px 0;
+	border-color:transparent var(--orange, #f3961c);
+  }
+  
+  /* Variant : right
+  ------------------------------------------ */
+  
+  .triangle-isosceles.right:after {
+	top:16px; /* controls vertical position */
+	right:-50px; /* value = - border-left-width - border-right-width */
+	bottom:auto;
+	left:auto;
+	border-width:10px 0 10px 50px;
+	border-color:transparent var(--blue, #1c79f3);
+  }

@@ -1,0 +1,232 @@
+<ion-content padding>
+  <ion-grid *ngIf="lesson">
+    <!--stars-->
+    <ion-row *ngIf="currentSlide" >
+      <ion-col style="padding: 0" *ngFor="let result of slideScore">
+        <img  [src]="result == 1 ? 'assets/img/ic_star_gold.png' : (result == -1 ? 'assets/img/ic_star_pink.png' : 'assets/img/ic_star_grey.png')"/>
+      </ion-col>
+    </ion-row>
+
+    <ion-row *ngIf="currentSlide">
+      <ion-col>{{currentSlide.Instructions}}</ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ng-container *ngIf="currentSlide" [ngSwitch]="currentSlide.CategoryId">
+
+    <!-- multiple choice image -->
+    <ng-container *ngSwitchCase="1">
+        <app-audio-prompt 
+        [hasAudio]="currentSlide.HasAudio"
+        [audioUrl]="audioUrl + currentSlide.Target.AudioFileName" 
+        [labelEnglish]="currentSlide.LabelEnglish"
+        [textToSpeak]="currentSlide.TextToSpeak"
+      ></app-audio-prompt>
+      <!-- {{ shuffle(currentSlide.Medias); }} -->
+      <ion-grid *ngIf="medias.length > 0" >
+        <ion-row  *ngFor="let media of medias" align-items-center>
+          <ion-col col-auto *ngIf="media.IsTarget == 1" >
+            <img [className]="media.Selected ? 'fade' : 'normal'" (click)="selectRight(media)"  src="{{imageUrl + media.ImageFileName}}"/>
+          </ion-col>
+          <ion-col col-auto *ngIf="media.IsTarget == 0">
+            <img [className]="media.Selected ? 'fade' : 'normal'" (click)="selectWrong(media)"  src="{{imageUrl + media.ImageFileName}}"/>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ng-container>
+
+      <!-- multiple choice text -->
+      <ng-container *ngSwitchCase="2" >
+        <app-audio-prompt 
+          [hasAudio]="currentSlide.HasAudio"
+          [audioUrl]="audioUrl + currentSlide.Target.AudioFileName" 
+          [labelEnglish]="currentSlide.LabelEnglish"
+          [textToSpeak]="currentSlide.TextToSpeak"
+        ></app-audio-prompt>
+        <!--<% shuffle(Medias); }}-->
+        <ion-grid *ngIf="medias">
+          <ion-row *ngFor="let media of medias">
+            <ion-col *ngIf="media.IsTarget == '1'" >
+              <ion-button shape="block" (click)="selectRight(media)" [disabled]="media.Selected" >{{media.Thai}}</ion-button>
+            </ion-col>
+            <ion-col *ngIf="media.IsTarget == '0'" >
+              <ion-button shape="block" (click)="selectWrong(media)" [disabled]="media.Selected">{{media.Thai}}</ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ng-container>
+
+      <!--missing word -->
+      <ng-container *ngSwitchCase="3">
+        <app-audio-prompt 
+          [hasAudio]="currentSlide.HasAudio"
+          [audioUrl]="audioUrl + currentSlide.Target.AudioFileName" 
+          [labelEnglish]="currentSlide.LabelEnglish"
+          [labelThai]="currentSlide.Content_Thai"
+          [textToSpeak]="currentSlide.TextToSpeak"
+        ></app-audio-prompt>
+        <ion-grid *ngIf="medias">
+          <ion-row *ngFor="let media of medias">
+            <ion-col *ngIf="media.IsTarget == '1'" >
+              <ion-button shape="block" (click)="selectRight(media)" [disabled]="media.Selected" >{{media.English}}</ion-button>
+            </ion-col>
+            <ion-col *ngIf="media.IsTarget == '0'" >
+              <ion-button shape="block" (click)="selectWrong(media)" [disabled]="media.Selected">{{media.English}}</ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ng-container>
+
+      <!-- teaching -->
+      <ng-container *ngSwitchCase="4">
+        <ion-card>
+          <ion-card-content>
+            {{currentSlide.Content_Thai}}
+          </ion-card-content>
+        </ion-card>
+        <ion-list *ngFor="let media of medias">
+          <ion-item>
+            <app-audio-prompt 
+              [hasAudio]="false"
+              [labelEnglish]="media.English"
+              [labelThai]="media.Thai"
+              [textToSpeak]="media.English"
+            ></app-audio-prompt>
+          </ion-item>
+        </ion-list>
+        <ion-button shape="block" class="navigation-button" (click)="moveNext()">ต่อไป</ion-button>
+      </ng-container>
+
+      <!--matching pairs text -->
+      <ng-container *ngSwitchCase="6">
+        <ng-container *ngFor="let media of medias">
+          <div *ngIf="media.Visible" [class]="media.Selected ? 'frame-highlight' : 'frame'" >
+            <ion-button shape="block" (click)="selectEnglishText(media)" >{{media.English}}</ion-button>
+          </div>
+        </ng-container>
+        <br/>
+        <ng-container *ngFor="let media of medias2">
+          <div *ngIf="media.Visible" [class]="media.Selected ? 'frame-highlight' : 'frame'">
+              <ion-button shape="block" (click)="selectThaiText(media)">{{media.Thai}}</ion-button>
+          </div>
+        </ng-container>        
+      </ng-container>
+
+      <!-- translate -->
+      <ng-container *ngSwitchCase="9">
+          <ion-grid>
+            <ion-row  *ngIf="currentSlide.HasAudio">
+              <ion-col>
+                <audio autoplay controls src="{{audioUrl + currentSlide.Target.AudioFileName}}"></audio>
+              </ion-col>
+            </ion-row>
+            <ion-row *ngIf="currentSlide.HasAudio">
+              <ion-col>
+                <ion-input [(ngModel)]="translateTarget"></ion-input>
+              </ion-col>
+            </ion-row>
+            <ion-row *ngIf="currentSlide.HasAudio && currentSlide.Content_Thai">
+              <ion-col>{{currentSlide.Content_Thai}}</ion-col>
+            </ion-row>
+          
+            <ion-row  *ngIf="!currentSlide.HasAudio" align-items-center>
+              <ion-col size="auto">
+                <img width="30px" src="assets/img/speaker.png" (click)="speak(currentSlide.TextToSpeak)"/>
+              </ion-col>
+              <ion-col>
+                <ion-item text-wrap>
+                  <ion-textarea rows="1" autosize [readonly]="true" [(ngModel)]="translateTarget"></ion-textarea>
+                </ion-item>
+                <ng-container *ngIf="currentSlide.Content_Thai">
+                  {{currentSlide.Content_Thai}}
+                </ng-container>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+
+          <ng-container *ngFor="let media of medias2">
+            <ng-container *ngIf="media.Visible">
+              <ion-button *ngIf="media.IsTarget == '1'" [disabled]="media.Selected" (click)="selectTranslate(media)">{{selectiveToLowerCase(media.English)}}</ion-button>
+              <ion-button *ngIf="media.IsTarget == '0'" [disabled]="media.Selected" (click)="selectTranslate(media)">{{selectiveToLowerCase(media.English)}}</ion-button>
+            </ng-container>
+          </ng-container>
+          <ion-button shape="block" class="navigation-button" [disabled]="!translateComplete"  (click)="moveNext()">ต่อไป</ion-button>
+      </ng-container>
+
+      <!--matching pairs image-->
+      <ng-container *ngSwitchCase="11">
+        <ng-container *ngFor="let media of medias">
+          <div *ngIf="media.Visible" [class]="media.Selected ? 'frame-highlight' : 'frame'" >
+            <ion-button shape="block" (click)="selectEnglishText2(media)" >{{media.English}}</ion-button>
+          </div>
+        </ng-container>
+        <br/>
+        <ng-container *ngFor="let media of medias2">
+          <div *ngIf="media.Visible" [class]="media.Selected ? 'frame-highlight' : 'frame'">
+            <img (click)="selectImage(media)" src="{{imageUrl + media.ImageFileName}}" />
+          </div>
+        </ng-container>        
+      </ng-container>
+
+      <!-- writing -->
+      <ng-container *ngSwitchCase="14">
+        <p class="label-english">{{medias[0].English}}</p>
+        <ion-input [(ngModel)]="writing" type="text" (keyup)="checkText(medias[0].English)"></ion-input>
+        <ion-button shape="block" class="navigation" (click)="moveNext()" [disabled]="!writingMatch">ต่อไป</ion-button>
+        <ion-button shape="block" class="navigation-cheat" (click)="moveNextCheat()">ไม่ได้</ion-button>
+      </ng-container>
+
+      <!-- bingo -->
+      <ng-container *ngSwitchCase="15">
+        <app-audio-prompt 
+          [hasAudio]="false"
+          [labelThai]="currentSlide.Target.Thai"
+          [textToSpeak]="currentSlide.Target.English"
+        ></app-audio-prompt>
+        <ng-container *ngFor="let media of medias">
+          <ion-button *ngIf="media.IsTarget == '1'" [disabled]="media.Selected" (click)="selectRight(media)">{{media.English}}</ion-button>
+          <ion-button *ngIf="media.IsTarget == '0'" [disabled]="media.Selected" (click)="selectWrong(media)">{{media.English}}</ion-button>
+        </ng-container>
+      </ng-container>
+
+      <!-- conversation -->
+      <ng-container *ngSwitchCase="16">
+          <img *ngIf="currentSlide.ImageFileName.length > 0" class="single" src="{{imageUrl + currentSlide.ImageFileName}}"/>
+          <ng-container *ngFor="let media of medias">
+              <div *ngIf="media.MediaOrder % 2 == 0" style="float:left">
+                  <button class="triangle-isosceles left" (click)="speak(media.English)" >{{media.English}}<br/>{{media.Thai}}</button>
+              </div>  
+            <div *ngIf="media.MediaOrder % 2 == 1" style="float:right">
+                <button class="triangle-isosceles right" (click)="speak(media.English)" >{{media.English}}<br/>{{media.Thai}}</button>
+            </div>
+          </ng-container>
+          <ion-button shape="block" class="navigation-button" (click)="moveNext()">ต่อไป</ion-button>
+      </ng-container>
+
+      <!--question-->
+      <ng-container *ngSwitchCase="17">
+          <app-audio-prompt 
+            [hasAudio]="false"
+            [labelEnglish]="currentSlide.LabelEnglish"
+            [labelThai]="currentSlide.Content_Thai"
+            [textToSpeak]="currentSlide.TextToSpeak"
+        ></app-audio-prompt>
+        <ion-grid *ngIf="medias">
+          <ion-row *ngFor="let media of medias2">
+            <ion-col *ngIf="media.IsTarget == '1'" >
+              <ion-button shape="block" (click)="selectRight(media)" [disabled]="media.Selected" >{{media.English}}</ion-button>
+            </ion-col>
+            <ion-col *ngIf="media.IsTarget == '0'" >
+              <ion-button shape="block" (click)="selectWrong(media)" [disabled]="media.Selected">{{media.English}}</ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        <img *ngIf="currentSlide.ImageFileName != ''" src="{{imageUrl + currentSlide.ImageFileName}}"/>
+      </ng-container>
+
+      <ng-container *ngSwitchCase="18"></ng-container>
+      <ng-container *ngSwitchCase="20"></ng-container>
+      <ng-container *ngSwitchCase="21"></ng-container>
+    
+  </ng-container>
+</ion-content>
